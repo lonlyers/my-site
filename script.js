@@ -56,15 +56,42 @@ document.querySelectorAll('section').forEach(section => {
     observer.observe(section);
 });
 
-// Add active state to navigation based on scroll position
-window.addEventListener('scroll', () => {
+// Combined scroll handler for better performance
+const header = document.querySelector('header');
+let lastScroll = 0;
+
+// Throttle function to limit scroll event firing
+function throttle(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Combined scroll event handler
+const handleScroll = throttle(() => {
+    const currentScroll = window.scrollY;
+    
+    // Update header shadow based on scroll position
+    if (currentScroll <= 0) {
+        header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+    } else {
+        header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.2)';
+    }
+    
+    // Update active navigation state
     let current = '';
     const sections = document.querySelectorAll('section');
     
     sections.forEach(section => {
         const sectionTop = section.offsetTop;
         const sectionHeight = section.clientHeight;
-        if (pageYOffset >= (sectionTop - 200)) {
+        if (currentScroll >= (sectionTop - 200)) {
             current = section.getAttribute('id');
         }
     });
@@ -75,23 +102,11 @@ window.addEventListener('scroll', () => {
             link.classList.add('active');
         }
     });
-});
-
-// Add scroll effect to header
-let lastScroll = 0;
-const header = document.querySelector('header');
-
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    if (currentScroll <= 0) {
-        header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-    } else {
-        header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.2)';
-    }
     
     lastScroll = currentScroll;
-});
+}, 100);
+
+window.addEventListener('scroll', handleScroll);
 
 // Initialize animations
 window.addEventListener('load', () => {
