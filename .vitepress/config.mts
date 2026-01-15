@@ -9,7 +9,8 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text:'面试题', link:'/interview/browser-event-loop-detail',activeMatch: '/interview/' },
-      { text: '案例', link: '/markdown-examples' }
+      { text: '案例', link: '/markdown-examples' },
+      { text: '项目经历', link: '/project-jl.md' }
     ],
 
     sidebar: {
